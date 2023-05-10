@@ -15,6 +15,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 #include <algorithm>
 #include <iomanip>
+#include <iostream>
 
 using namespace osg2vsg;
 
@@ -27,7 +28,17 @@ uint32_t osg2vsg::calculateShaderModeMask(const osg::StateSet* stateSet)
         if (stateSet->getMode(GL_LIGHTING) & osg::StateAttribute::ON) stateMask |= LIGHTING;
 
         auto asMaterial = dynamic_cast<const osg::Material*>(stateSet->getAttribute(osg::StateAttribute::Type::MATERIAL));
-        if (asMaterial && stateSet->getMode(GL_COLOR_MATERIAL) == osg::StateAttribute::Values::ON) stateMask |= MATERIAL;
+        if (asMaterial)
+        {
+            if (asMaterial->getColorMode() == osg::Material::OFF)
+            {
+                stateMask |= MATERIAL;
+            }
+            else
+            {
+                std::cout << "Warning: osg::Material color mode not supported.\n";
+            }
+        }
 
         auto hasTextureWithImageInChannel = [stateSet](unsigned int channel) {
             auto asTex = dynamic_cast<const osg::Texture*>(stateSet->getTextureAttribute(channel, osg::StateAttribute::TEXTURE));

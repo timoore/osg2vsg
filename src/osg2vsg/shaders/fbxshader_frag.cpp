@@ -69,6 +69,7 @@ void main()
     vec3 diffuseColor = material.diffuseColor.rgb;
     vec3 specularColor = material.specularColor.rgb;
     float shininess = material.shininess;
+    base.a *= material.diffuseColor.a;
 #else
     vec3 ambientColor = vec3(0.1,0.1,0.1);
     vec3 diffuseColor = vec3(1.0,1.0,1.0);
